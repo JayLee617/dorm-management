@@ -32,6 +32,18 @@ npm run build
 npx serve -s dist/client -l 5174
 ```
 
+## 在线访问（GitHub Pages）
+
+仓库已内置 `.github/workflows/pages.yml`：推送到 `master`/`main` 分支后自动构建并以 `/dorm-management/` 为子路径部署，五个角色页可通过深链接直接访问：
+
+- https://jaylee617.github.io/dorm-management/student
+- https://jaylee617.github.io/dorm-management/manager
+- https://jaylee617.github.io/dorm-management/maintenance
+- https://jaylee617.github.io/dorm-management/counselor
+- https://jaylee617.github.io/dorm-management/admin
+
+首次部署前，需在仓库 Settings → Pages → Source 中选择 **GitHub Actions**。构建产物中的 `404.html` 为 SPA 深链接回退文件，由 `scripts/prepare-pages-build.mjs` 生成。
+
 ## 技术栈
 
 - React 19 + TypeScript + Vite 8

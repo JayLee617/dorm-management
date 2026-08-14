@@ -3378,7 +3378,12 @@ function maintenanceTabScreen(tab: string, tabFooterHeight: number): FlowScreen 
 }
 
 function roleFromPath() {
-  const path = window.location.pathname.replace(/\/+$/, "");
+  const base = import.meta.env.BASE_URL ?? "/";
+  const basePath = base.length > 1 ? base.replace(/\/+$/, "") : "";
+  const path = window.location.pathname
+    .slice(basePath.length)
+    .replace(/^\/+/, "/")
+    .replace(/\/+$/, "");
   if (path === "/manager") return "manager";
   if (path === "/maintenance") return "maintenance";
   if (path === "/counselor") return "counselor";
