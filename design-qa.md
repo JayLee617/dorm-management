@@ -199,3 +199,14 @@ Per user request to polish the whole project and collect reference from GitHub, 
 
 - User reported the 工作台 → 待审批申请 shortcut opened the full approval list instead of pending ones. Fixed by threading an `initialFilter` through `counselorApprovalsScreen(tabFooterHeight, "待审批")` into `CounselorApprovals`' filter state, so the entry lands on the 待审批 chip with only pending items listed; the 审批 tab still opens on 全部 as before.
 - Verified: clicking the shortcut shows the 待审批 chip selected with exactly the 5 pending applications, zero console errors. Rebuilt (runtime integrity passed) and full regression re-run afterward: zero console errors.
+
+## Deployment (2026-08-14) — GitHub Pages 部署
+
+- Configured GitHub Pages deployment for the prototype (user-owned repo `JayLee617/dorm-management`):
+  - `.github/workflows/pages.yml`: builds on master/main with `vite build --base=/dorm-management/ --outDir dist/client` (Node 24 runner), generates `dist/client/404.html` via `scripts/prepare-pages-build.mjs` (copies built index.html for SPA deep-link fallback), then uploads/deploys via `actions/deploy-pages`.
+  - `roleFromPath()` now strips `import.meta.env.BASE_URL` so the five role routes work both at `/` (local) and `/dorm-management/` (Pages).
+- CI fixes along the way:
+  - Removed `@rolldown/binding-win32-x64-msvc` from devDependencies — a Windows-only binary that made `npm ci` fail on Linux runners (EBADPLATFORM). rolldown already ships all platform bindings as optionalDependencies.
+  - Cleaned corrupted global `C:\Users\97412\.npmrc` entries that contained zero-width characters (U+200B) in registry keys, which broke npm config parsing.
+- Explicit runtime change (lock hashes updated via `scripts/update-mobile-runtime-lock.mjs`): `src/mobile/assets.ts` and `src/mobile/components.tsx` now build device-chrome asset URLs (phone bezel, keyboard, status icons, Android nav bar) from `import.meta.env.BASE_URL` instead of root-absolute `/assets/...`, so the phone frame renders under the Pages subpath.
+- Verified locally with a subpath static server (mock GitHub Pages behavior): all five role pages render and every image loads; zero failed requests / console errors. Live Pages URL: https://jaylee617.github.io/dorm-management/...
